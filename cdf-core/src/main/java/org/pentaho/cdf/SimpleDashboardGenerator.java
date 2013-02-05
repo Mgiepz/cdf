@@ -139,8 +139,13 @@ public class SimpleDashboardGenerator extends DashboardGenerator {
 	}
 
 	@Override
-	protected void buildIntro() {
-		output += intro.substring(0, intro.indexOf("<head>") + 6);	
+	protected void buildIntro() throws InvalidTemplateException {
+		int indexOfHead = intro.indexOf("<head>");
+		if(indexOfHead>0){
+			output += intro.substring(0, indexOfHead + 6);	
+		}else{
+			throw new InvalidTemplateException("Template does not have a head-element");
+		}
 	}
 
 	@Override
@@ -195,8 +200,10 @@ public class SimpleDashboardGenerator extends DashboardGenerator {
 			logger.info("[Timing] starting minification: " + (new SimpleDateFormat("HH:mm:ss.SSS")).format(new Date()));
 			String stylesHash = resourceManager.getMinifiedPackage("styles" + suffix);
 			String scriptsHash = resourceManager.getMinifiedPackage("scripts" + suffix);
-			stylesBuilder.append("<link href=\"").append(absRoot).append(RELATIVE_URL).append("/content/pentaho-cdf/js/styles").append(suffix).append(".css?version=").append(stylesHash).append("\" rel=\"stylesheet\" type=\"text/css\" />");
-			scriptsBuilder.append("<script type=\"text/javascript\" src=\"").append(absRoot).append(RELATIVE_URL).append("/content/pentaho-cdf/js/scripts").append(suffix).append(".js?version=").append(scriptsHash).append("\"></script>");
+			stylesBuilder.append("<link href=\"").append(absRoot).append(RELATIVE_URL).append("/content/").append(PLUGIN_NAME).append("/js/styles")
+			.append(suffix).append(".css?version=").append(stylesHash).append("\" rel=\"stylesheet\" type=\"text/css\" />");
+			scriptsBuilder.append("<script type=\"text/javascript\" src=\"").append(absRoot).append(RELATIVE_URL).append("/content/").append(PLUGIN_NAME).append("/js/scripts")
+			.append(suffix).append(".js?version=").append(scriptsHash).append("\"></script>");
 			logger.info("[Timing] finished minification: " + (new SimpleDateFormat("HH:mm:ss.SSS")).format(new Date()));
 		}
 		// Add extra components libraries
@@ -210,7 +217,7 @@ public class SimpleDashboardGenerator extends DashboardGenerator {
 
 		// Add ie8 blueprint condition
 		stylesBuilder.append("<!--[if lte IE 8]><link rel=\"stylesheet\" href=\"").append(absRoot).append(RELATIVE_URL)
-		.append("/content/pentaho-cdf/js/blueprint/ie.css\" type=\"text/css\" media=\"screen, projection\"><![endif]-->");
+		.append("/content/").append(PLUGIN_NAME).append("/js/blueprint/ie.css\" type=\"text/css\" media=\"screen, projection\"><![endif]-->");
 
 		StringBuilder stuff = new StringBuilder();
 		includes.put("scripts", scriptsBuilder.toString());
@@ -221,6 +228,18 @@ public class SimpleDashboardGenerator extends DashboardGenerator {
 
 		output += stuff.toString();
 
+	}
+
+	@Override
+	protected void buildContent() {
+		 output += "<div id=\"dashboardContent\">";
+		 output += dashboardContent;
+		 output += "</div>";
+	}
+	
+	@Override
+	protected void buildFooter() {
+		output += footer;
 	}
 
 	protected ArrayList<String> getExtraScripts(String dashboardContentOrig, Properties resources) {

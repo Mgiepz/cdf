@@ -24,7 +24,15 @@ import pt.webdetails.cpf.http.ICommonParameterProvider;
  *
  */
 public abstract class DashboardGenerator {
-	
+
+	public void setLocale(Locale locale) {
+		this.locale = locale;
+	}
+
+	public void setEncoding(String encoding) {
+		this.encoding = encoding;
+	}
+
 	public void setRelativeUrl(String relativeUrl) {
 		RELATIVE_URL = relativeUrl;
 	}
@@ -74,7 +82,7 @@ public abstract class DashboardGenerator {
 	
 	protected Locale locale;
 	
-	protected String output;
+	protected String output = "";
 	
 	@Autowired
 	protected DashboardResourceManager resourceManager;
@@ -112,11 +120,15 @@ public abstract class DashboardGenerator {
 		
 		buildStorage();
 		
+		buildContent();
+		
+		buildFooter();
+		
 		out.write(output.getBytes(encoding));
 				
 	}
 
-	protected abstract void buildIntro();
+	protected abstract void buildIntro() throws InvalidTemplateException;
 
 	// Merge dashboard related message file with global message file 
 	// and save it in the dashboard cache
@@ -138,7 +150,11 @@ public abstract class DashboardGenerator {
 	protected abstract void buildStorage();
 
 	// Process i18n for each line of the dashboard output
-	protected void processI18nTags() {}
+	protected abstract void processI18nTags();
+	
+	protected abstract void buildFooter();
+	
+	protected abstract void buildContent();
 	
 	
 	
