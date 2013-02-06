@@ -49,7 +49,7 @@ public abstract class DashboardGenerator {
 	}
 
 	protected String RELATIVE_URL;
-	
+
 	protected String PLUGIN_NAME;
 
 	/*
@@ -61,71 +61,60 @@ public abstract class DashboardGenerator {
 	 * template-dashboard-mantle.html
 	 */
 	protected String templateContent;
-	
+
 	/*
 	 * This is the html document containing the dashboard template
 	 * default-dashboard-template.html is the fallback
 	 */
 	protected String dashboardContent;
-	
+
 	protected ICommonParameterProvider requestParams; 
-	
+
 	protected static final Log logger = LogFactory.getLog(DashboardGenerator.class);
-	
+
 	protected ArrayList<String> tagsList = new ArrayList<String>();	
 
 	protected String intro;
-	
+
 	protected String footer;
 
 	protected String encoding;
-	
-	protected Locale locale;
-	
+
+	protected Locale locale = Locale.getDefault();
+
 	protected String output = "";
-	
+
 	@Autowired
 	protected DashboardResourceManager resourceManager;
 
-//	public DashboardGenerator(String relativeUrl, String pluginName, ICommonParameterProvider requestParams) throws IOException {
-//		RELATIVE_URL = relativeUrl;
-//		PLUGIN_NAME = pluginName;
-//		this.requestParams = requestParams;
-//
-////		this.templateContent = resourceManager.getStringContent(requestParams.getStringParameter("template", null));
-////		this.dashboardContent = resourceManager.getStringContent(requestParams.getStringParameter("dashboard", null));
-//		
-//	}
-	
 	public void init() throws IOException{
-		this.templateContent = resourceManager.getStringContent(requestParams.getStringParameter("template", null));
-		this.dashboardContent = resourceManager.getStringContent(requestParams.getStringParameter("dashboard", null));		
-	}
+		resourceManager.init();
+	};
 
 	public final void generateHtmlOutput(OutputStream out) throws Exception{
 
 		updateUserLanguageKey();
-		
+
 		processTemplateI18nTags();
-		
+
 		splitTemplate();
-		
+
 		mergeMessages();
-		
+
 		buildIntro();
-		
+
 		buildHeaders();
-		
+
 		buildContext();
-		
+
 		buildStorage();
-		
+
 		buildContent();
-		
+
 		buildFooter();
-		
+
 		out.write(output.getBytes(encoding));
-				
+
 	}
 
 	protected abstract void buildIntro() throws InvalidTemplateException;
@@ -139,23 +128,23 @@ public abstract class DashboardGenerator {
 
 	// Fill the template with the correct user locale
 	protected abstract void updateUserLanguageKey();
-	
+
 	// Process i18n on dashboard outer template
 	protected abstract void processTemplateI18nTags();
-	
+
 	protected abstract void buildHeaders() throws Exception;
-	
+
 	protected abstract void buildContext();
-	
+
 	protected abstract void buildStorage();
 
 	// Process i18n for each line of the dashboard output
 	protected abstract void processI18nTags();
-	
+
 	protected abstract void buildFooter();
-	
+
 	protected abstract void buildContent();
-	
-	
-	
+
+
+
 }

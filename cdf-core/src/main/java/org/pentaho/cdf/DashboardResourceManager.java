@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
@@ -26,6 +27,9 @@ public class DashboardResourceManager {
 	 * This should be injected
 	 */
 	
+	public DashboardResourceManager() {
+	}
+
 	@Autowired
 	private IRepositoryAccess repository;
 	
@@ -35,15 +39,34 @@ public class DashboardResourceManager {
 
 	private Map<String,Properties> resourceIncludes;
 
-	//path from the repository root, i.e. "system/pentaho-cdf"
-	private String rootdir;
-	
+	private String rootdir = "";
+
+	public DashboardResourceManager(String rootdir) {
+		this.rootdir = rootdir;
+		try {
+			this.init();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} 
+	}
+
+	public void setRootdir(String rootdir) {
+		this.rootdir = rootdir;
+		try {
+			this.init();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} 
+	}
+
 	/**
 	 * On init we register resources with the packager and 
 	 * store the content of the resources in a static Hashmap
 	 */
 	protected void init() throws FileNotFoundException, IOException {
 
+		this.resourceIncludes = new HashMap<String, Properties>();
+		
 		final Properties blueprintResources = new Properties();
 		blueprintResources.load(repository.getResourceInputStream(rootdir + "/resources-blueprint.txt"));  
 		resourceIncludes.put("blueprint", blueprintResources);

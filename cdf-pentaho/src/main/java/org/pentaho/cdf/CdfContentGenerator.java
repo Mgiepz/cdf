@@ -12,6 +12,7 @@ import java.security.InvalidParameterException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
@@ -38,9 +39,9 @@ import org.pentaho.platform.api.engine.IMimeTypeListener;
 import org.pentaho.platform.api.engine.IParameterProvider;
 import org.pentaho.platform.engine.core.solution.ActionInfo;
 import org.pentaho.platform.engine.core.system.PentahoSystem;
+import org.pentaho.platform.util.messages.LocaleHelper;
 import org.pentaho.platform.util.xml.dom4j.XmlDom4JHelper;
 
-import pt.webdetails.cpf.SimpleContentGenerator;
 import pt.webdetails.cpf.SpringEnabledContentGenerator;
 import pt.webdetails.cpf.WrapperUtils;
 import pt.webdetails.cpf.annotations.AccessLevel;
@@ -377,7 +378,7 @@ public class CdfContentGenerator extends SpringEnabledContentGenerator{
 
 		final String fullPath = ActionInfo.buildSolutionPath(solution, path, action);
 		// Check for access permissions
-		if (PentahoRepositoryAccess.getRepository().hasAccess(fullPath, FileAccess.EXECUTE)){
+		if (!PentahoRepositoryAccess.getRepository().hasAccess(fullPath, FileAccess.EXECUTE)){
 			out.write("Access Denied".getBytes(ENCODING));
 			return;
 		}
@@ -402,7 +403,7 @@ public class CdfContentGenerator extends SpringEnabledContentGenerator{
 		}
 
 		requestParams.put("templateName", templateName);
-		requestParams.put("dashboardName", dashboardName);
+		requestParams.put("dashboardName", dashboardName); //TODO: Stupid naming!!!
 		requestParams.put("messagesBaseFilename", messagesBaseFilename);
 
 		renderHtmlDashboard(requestParams, out);
@@ -423,6 +424,9 @@ public class CdfContentGenerator extends SpringEnabledContentGenerator{
 		dashboardGenerator.setPluginName(PLUGIN_NAME);
 		dashboardGenerator.setRelativeUrl(getRelativeUrl());
 		dashboardGenerator.setRequestParams(requestParams);
+		dashboardGenerator.setEncoding("utf-8");
+		dashboardGenerator.setLocale(LocaleHelper.getLocale());
+		
 		dashboardGenerator.init();
 		dashboardGenerator.generateHtmlOutput(out);
 		

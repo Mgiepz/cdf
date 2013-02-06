@@ -17,6 +17,12 @@ public class SimpleDashboardGenerator extends DashboardGenerator {
 	
 	public SimpleDashboardGenerator() {	}
 
+	public void init() throws IOException{
+		this.resourceManager.init();
+		this.templateContent = resourceManager.getStringContent(requestParams.getStringParameter("template", null));
+		this.dashboardContent = resourceManager.getStringContent(requestParams.getStringParameter("dashboard", null));		
+	}
+	
 	@Override
 	public void updateUserLanguageKey() {
 		if (logger.isDebugEnabled()) {
