@@ -14,7 +14,7 @@ import java.util.Properties;
 import org.apache.commons.lang.StringUtils;
 
 public class SimpleDashboardGenerator extends DashboardGenerator {
-	
+
 	public SimpleDashboardGenerator() {	}
 
 	public void init() throws IOException{
@@ -22,12 +22,12 @@ public class SimpleDashboardGenerator extends DashboardGenerator {
 
 		String template = requestParams.getStringParameter("templateName", null);
 		String dashboard = requestParams.getStringParameter("dashboardName", null);
-		
+
 		this.templateContent = resourceManager.getStringContent(template);
 		this.dashboardContent = resourceManager.getStringContent(dashboard);		
-	
+
 	}
-	
+
 	@Override
 	public void updateUserLanguageKey() {
 		if (logger.isDebugEnabled()) {
@@ -150,13 +150,21 @@ public class SimpleDashboardGenerator extends DashboardGenerator {
 	}
 
 	@Override
-	protected void buildIntro() throws InvalidTemplateException {
+	protected void beginIntro() throws InvalidTemplateException {
 		int indexOfHead = intro.indexOf("<head>");
 		if(indexOfHead>0){
 			output += intro.substring(0, indexOfHead + 6);	
 		}else{
 			throw new InvalidTemplateException("Template does not have a head-element");
 		}
+	}
+	
+
+	@Override
+	protected void endIntro() {
+		int indexOfHead = intro.indexOf("<head>");
+		output += intro.substring(indexOfHead + 6, intro.length());	
+		
 	}
 
 	@Override
@@ -176,9 +184,9 @@ public class SimpleDashboardGenerator extends DashboardGenerator {
 		} else {
 			suffix = "";
 		}
-	
+
 		HashMap<String, String> includes = new HashMap<String, String>();
-		
+
 		final Properties resources = resourceManager.getResourceIncludes(dashboardType);
 
 		final ArrayList<String> miniscripts = new ArrayList<String>();
@@ -243,11 +251,12 @@ public class SimpleDashboardGenerator extends DashboardGenerator {
 
 	@Override
 	protected void buildContent() {
-		 output += "<div id=\"dashboardContent\">";
-		 output += dashboardContent;
-		 output += "</div>";
+
+		output += "<div id=\"dashboardContent\">";
+		output += dashboardContent;
+		output += "</div>";
 	}
-	
+
 	@Override
 	protected void buildFooter() {
 		output += footer;

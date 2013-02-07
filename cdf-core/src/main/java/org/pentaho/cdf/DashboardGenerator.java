@@ -101,9 +101,11 @@ public abstract class DashboardGenerator {
 
 		mergeMessages();
 
-		buildIntro();
+		beginIntro();
 
 		buildHeaders();
+		
+		endIntro();
 
 		buildContext();
 
@@ -117,7 +119,9 @@ public abstract class DashboardGenerator {
 
 	}
 
-	protected abstract void buildIntro() throws InvalidTemplateException;
+	protected abstract void endIntro(); 
+
+	protected abstract void beginIntro() throws InvalidTemplateException;
 
 	// Merge dashboard related message file with global message file 
 	// and save it in the dashboard cache

@@ -300,7 +300,7 @@ public class CdfContentGenerator extends SpringEnabledContentGenerator{
 		IParameterProvider requestParams = getRequestParameters();
 
 		DashboardContext context = new DashboardContext(userSession);
-		String sContext = context.getContext(requestParams);
+		String sContext = context.getContext(WrapperUtils.wrapParamProvider(requestParams));
 
 		out.write(sContext.getBytes(ENCODING));
 	}
@@ -419,19 +419,27 @@ public class CdfContentGenerator extends SpringEnabledContentGenerator{
 	 */
 	public void renderHtmlDashboard(final ICommonParameterProvider requestParams, final OutputStream out) throws Exception {
 
-		DashboardGenerator dashboardGenerator = (DashboardGenerator) pluginContext.getBean("dashboardGenerator");
+		DashboardGenerator dashboardGenerator = getDashboardGenerator(requestParams);
+		
+		dashboardGenerator.generateHtmlOutput(out);
+		
+		setResponseHeaders(MimeType.HTML, 0, null);
+
+	}
+
+	private DashboardGenerator getDashboardGenerator(
+			final ICommonParameterProvider requestParams) throws IOException {
+		PentahoDashboardGenerator dashboardGenerator = (PentahoDashboardGenerator) pluginContext.getBean("dashboardGenerator");
 
 		dashboardGenerator.setPluginName(PLUGIN_NAME);
 		dashboardGenerator.setRelativeUrl(getRelativeUrl());
 		dashboardGenerator.setRequestParams(requestParams);
 		dashboardGenerator.setEncoding("utf-8");
 		dashboardGenerator.setLocale(LocaleHelper.getLocale());
-		
+		dashboardGenerator.setSession(this.userSession);
 		dashboardGenerator.init();
-		dashboardGenerator.generateHtmlOutput(out);
+		return dashboardGenerator;
 		
-		setResponseHeaders(MimeType.HTML, 0, null);
-
 	}
 
 	private String getRelativeUrl() {

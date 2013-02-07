@@ -41,6 +41,7 @@ import org.springframework.security.Authentication;
 import org.springframework.security.GrantedAuthority;
 import org.springframework.security.providers.anonymous.AnonymousAuthenticationToken;
 import pt.webdetails.cpf.InterPluginCall;
+import pt.webdetails.cpf.http.ICommonParameterProvider;
 
 /**
  *
@@ -66,7 +67,7 @@ public class DashboardContext {
         }
     }
 
-    public String getContext(IParameterProvider requestParams) {
+    public String getContext(ICommonParameterProvider requestParams) {
         try {
             String solution = requestParams.getStringParameter("solution", ""),
                     path = requestParams.getStringParameter("path", ""),

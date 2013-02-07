@@ -25,6 +25,8 @@ import org.pentaho.platform.api.engine.IPentahoSession;
 import org.pentaho.platform.api.engine.IPluginResourceLoader;
 import org.pentaho.platform.engine.core.system.PentahoSystem;
 
+import pt.webdetails.cpf.http.ICommonParameterProvider;
+
 /**
  *
  * @author pedro
@@ -131,7 +133,7 @@ public class StorageEngine {
 
     }
 
-    public String read(IParameterProvider requestParams, IPentahoSession userSession) throws JSONException, InvalidCdfOperationException, PluginHibernateException {
+    public String read(ICommonParameterProvider requestParams, IPentahoSession userSession) throws JSONException, InvalidCdfOperationException, PluginHibernateException {
         String username = userSession.getName();
         return read(username);
     }
