@@ -19,8 +19,13 @@ public class SimpleDashboardGenerator extends DashboardGenerator {
 
 	public void init() throws IOException{
 		this.resourceManager.init();
-		this.templateContent = resourceManager.getStringContent(requestParams.getStringParameter("template", null));
-		this.dashboardContent = resourceManager.getStringContent(requestParams.getStringParameter("dashboard", null));		
+
+		String template = requestParams.getStringParameter("templateName", null);
+		String dashboard = requestParams.getStringParameter("dashboardName", null);
+		
+		this.templateContent = resourceManager.getStringContent(template);
+		this.dashboardContent = resourceManager.getStringContent(dashboard);		
+	
 	}
 	
 	@Override
