@@ -2,6 +2,7 @@ package org.pentaho.cdf;
 
 import java.io.IOException;
 
+import org.pentaho.cdf.storage.StorageEngine;
 import org.pentaho.platform.api.engine.IPentahoSession;
 import org.pentaho.platform.api.engine.IUITemplater;
 import org.pentaho.platform.engine.core.solution.ActionInfo;
@@ -82,28 +83,28 @@ public class PentahoDashboardGenerator extends SimpleDashboardGenerator {
 	
 	@Override
 	protected void buildContext() {
-//        DashboardContext context = new DashboardContext(userSession);
-//        output += context.getContext(requestParams);
+        DashboardContext context = new DashboardContext(userSession);
+        output += context.getContext(requestParams);
 	}
 
-//	@Override
-//	protected void buildStorage() {
-//
-//        final StringBuilder s = new StringBuilder();
-//        s.append("\n<script language=\"javascript\" type=\"text/javascript\">\n");
-//        s.append("  Dashboards.storage = ");
-//        
-//        try {
-//			s.append(StorageEngine.getInstance().read(requestParams, userSession)).append("\n");
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//        
-//        s.append("</script>\n");
-//
-//        output += s.toString();
-//
-//	}
+	@Override
+	protected void buildStorage() {
+
+        final StringBuilder s = new StringBuilder();
+        s.append("\n<script language=\"javascript\" type=\"text/javascript\">\n");
+        s.append("  Dashboards.storage = ");
+        
+        try {
+			s.append(StorageEngine.getInstance().read(requestParams, userSession)).append("\n");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+        
+        s.append("</script>\n");
+
+        output += s.toString();
+
+	}
 
 	public void setSession(IPentahoSession userSession) {
 		this.userSession = userSession;
